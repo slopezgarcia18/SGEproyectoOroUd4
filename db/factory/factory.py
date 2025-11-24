@@ -37,7 +37,7 @@ def crearClientes():
         nuevoCliente = Cliente(
         nombre = fake.first_name(),
         apellidos = fake.last_name(),
-        fecha_nacim = fake.date_of_birth(),
+        fecha_nacim = fake.date_of_birth(minimum_age=18),
         dni = fake.nif(),
         email = fake.email(),
         nacionalidad = fake.country(),

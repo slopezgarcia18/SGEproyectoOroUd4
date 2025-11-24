@@ -1,13 +1,15 @@
 #Realizar aquí las consultas
-from calendar import month
-from datetime import date, timedelta, datetime
+
+from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 
 from sqlalchemy import extract
-from sqlalchemy.sql.functions import count
+from sqlalchemy.sql.functions import count, func
 
 from db.factory.factory import session
 from db.models.models import Cliente, Venta, Estado
+
+import matplotlib.pyplot as plt
 
 
 def insertarCliente():
@@ -99,6 +101,49 @@ def getClienteMesesSinVenta():
             print(cli)
     else:
         print("No existe datos de clientes")
+
+def graficaOro():
+    # Select del nombre del cliente y la suma de sus cantidades de ventas, agrupado por nombre
+    ventasCliente = (session.query(Cliente.nombre,func.sum(Venta.cantidad))
+                     .join(Cliente, Cliente.id == Venta.id_cliente)
+                     .group_by(Cliente.nombre).all())
+
+    # Creo dos listas para representar la grafica
+    listaNombres = []
+    listaCantidad = []
+
+    #bucle con la dos columnas de la consulta
+    for nombre,cantidad in ventasCliente:
+        listaNombres.append(nombre)
+        listaCantidad.append(cantidad)
+
+    plt.bar(listaNombres,listaCantidad)
+    plt.title("Cantidad de oro total por cliente")
+    plt.xlabel("Nombre")
+    plt.ylabel("Cantidad")
+    plt.show()
+
+def graficaVentasMes():
+    ventasMes = (session.query(func.extract('month',Venta.fecha_venta), func.count(Venta.id))
+                 .group_by(extract('month',Venta.fecha_venta)).all())
+
+    listaMeses = []
+    listaVentas = []
+
+    for mes,totalVentas in ventasMes:
+        listaMeses.append(mes)
+        listaVentas.append(totalVentas)
+
+    plt.bar(listaMeses, listaVentas)
+    plt.title("Total ventas por mes")
+    plt.xlabel("Meses")
+    plt.ylabel("Total Ventas")
+    plt.show()
+
+
+
+
+
 
 
 

@@ -1,5 +1,4 @@
 from db.config import Session
-from db.factory.factory import crearEstados, crearCotizacion, crearClientes, crearVentas
 from gestion.gestion import Gestor
 
 session = Session()
@@ -15,7 +14,9 @@ def menu():
               "4) Ventas de cliente\n"
               "5) Tasaciones no aceptadas\n"
               "6) Clientes con mas ventas\n"
-              "7) Clientes con 3 meses sin ventas")
+              "7) Clientes con 3 meses sin ventas\n"
+              "8) Grafica oro\n"
+              "9) Grafica ventas totales por mes")
 
         opc = int(input("Dime que quieres hacer: "))
         if opc == 1:
@@ -35,6 +36,10 @@ def menu():
             gestor.getClientesMasVentas()
         elif opc == 7:
             gestor.getClientesNoVentasMes()
+        elif opc == 8:
+            gestor.graficaOro()
+        elif opc == 9:
+            gestor.graficaVentasMes()
         else:
             break
 

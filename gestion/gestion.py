@@ -1,5 +1,6 @@
 from services.services import (insertarCliente,getClienteByDni,getVentasMes,
-                               getVentasCliente,getTasaNoAceptadas,getClienteMasVentas,getClienteMesesSinVenta)
+                               getVentasCliente,getTasaNoAceptadas,getClienteMasVentas,
+                               getClienteMesesSinVenta, graficaOro,graficaVentasMes)
 
 # Aqui se insertan los metodos/funciones
 
@@ -27,3 +28,9 @@ class Gestor:
 
     def getClientesNoVentasMes(self):
         getClienteMesesSinVenta()
+
+    def graficaOro(self):
+        graficaOro()
+
+    def graficaVentasMes(self):
+        graficaVentasMes()
