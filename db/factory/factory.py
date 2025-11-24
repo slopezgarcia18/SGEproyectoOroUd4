@@ -4,7 +4,7 @@ import random
 from faker import Faker
 
 from db.config import Session
-from db.models.models import Estado, Cliente, Cotizacion
+from db.models.models import Estado, Cliente, Cotizacion, Venta
 
 from datetime import date, timedelta
 import datetime
@@ -77,7 +77,53 @@ def crearCotizacion():
     print("Los registros de cotizacion han sido creados correctamente")
 
 
-# def crearVentas():
+def crearVentas():
+    estadoAceptada = session.query(Estado).filter(Estado.nombre == "ACEPTADA").first()
+    estadoRechazada = session.query(Estado).filter(Estado.nombre == "RECHAZADA").first()
+    estadoTasacion = session.query(Estado).filter(Estado.nombre == "TASACIÓN").first()
+
+    cotizacion = session.query(Cotizacion).all()
+    cliente = session.query(Cliente).all()
+
+    for i in range(400):
+        cotiRandom = random.choice(cotizacion)
+        clienteRandom = random.choice(cliente)
+        nuevaVenta = Venta(
+            fecha_venta = cotiRandom.fecha,
+            id_cliente = clienteRandom.id,
+            id_precio = cotiRandom.id,
+            id_estado = estadoAceptada.id,
+            cantidad = random.randint(1,100)
+        )
+        session.add(nuevaVenta)
+
+    for i in range(30):
+        cotiRandom = random.choice(cotizacion)
+        clienteRandom = random.choice(cliente)
+        nuevaVenta = Venta(
+            fecha_venta = cotiRandom.fecha,
+            id_cliente = clienteRandom.id,
+            id_precio = cotiRandom.id,
+            id_estado = estadoRechazada.id,
+            cantidad = random.randint(1,100)
+        )
+        session.add(nuevaVenta)
+
+    for i in range(20):
+        cotiRandom = random.choice(cotizacion)
+        clienteRandom = random.choice(cliente)
+        nuevaVenta = Venta(
+            fecha_venta = cotiRandom.fecha,
+            id_cliente = clienteRandom.id,
+            id_precio = cotiRandom.id,
+            id_estado = estadoTasacion.id,
+            cantidad = random.randint(1,100)
+        )
+        session.add(nuevaVenta)
+
+    session.commit()
+
+
 
 
 

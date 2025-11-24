@@ -20,7 +20,7 @@ class Cliente(Base):
     direccion = Column(String(50), nullable=False)
 
     def __repr__(self):
-        return (f"Id: {self.id}, Nombre: {self.nombre}, apellidos: {self.apellidos}, fecha nacimiento: {self.fecha_nacimiento} "
+        return (f"Id: {self.id}, Nombre: {self.nombre}, apellidos: {self.apellidos}, fecha nacimiento: {self.fecha_nacim} "
                 f"dni: {self.dni}, email: {self.email}, nacionalidad: {self.nacionalidad}, telefono: {self.telefono}, direccion: {self.direccion}")
 
 
@@ -49,7 +49,7 @@ class Venta(Base):
 
 
     def __repr__(self):
-        return f"Venta id: {self.id}, fecha venta: {self.fecha_venta}, Cliente id: {self.id_cliente}, precio id: {self.precio}, estado id: {self.id_estado}, cantidad: {self.cantidad}"
+        return f"Venta id: {self.id}, fecha venta: {self.fecha_venta}, Cliente id: {self.id_cliente}, precio id: {self.id_precio}, estado id: {self.id_estado}, cantidad: {self.cantidad}"
 
 
 class Estado(Base):
