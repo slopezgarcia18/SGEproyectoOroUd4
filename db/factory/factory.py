@@ -3,18 +3,18 @@
 import random
 from faker import Faker
 
-from db.config import Session
+from db.config import session
 from db.models.models import Estado, Cliente, Cotizacion, Venta
 
 from datetime import date, timedelta
-import datetime
+from log.log import  *
 
 fake = Faker('es_ES')
 
-session = Session()
+
+logger = Log()
 
 def crearEstados():
-
     listaEstados = ["TASACIÓN", "ACEPTADA", "RECHAZADA"]
 
     for nombre in listaEstados:
@@ -24,16 +24,19 @@ def crearEstados():
         if not existe:
             nuevoEstado = Estado(nombre = nombre)
             session.add(nuevoEstado)
-            print(f"El estado {nombre} ha sido añadido a la base de datos")
-        else:
-            print(f"El estado {nombre} ya existe")
+            logger.log("info",f"El estado {nombre} ha sido añadido a la base de datos")
 
     session.commit()
-    print("Estados guardados correctamente")
+    logger.log("info","Estados guardados correctamente")
 
 def crearClientes():
+    # Comprobar si ya existen datos
+    countClientes = session.query(Cliente).count()
+    if countClientes > 0:
+        logger.log("info", "Los clientes ya existen en la base de datos. Omitiendo creación.")
+        return
 
-    for i in range(18):
+    for i in range(20):
         nuevoCliente = Cliente(
         nombre = fake.first_name(),
         apellidos = fake.last_name(),
@@ -47,7 +50,7 @@ def crearClientes():
         session.add(nuevoCliente)
 
     session.commit()
-    print("Clientes guardados correctamente")
+    logger.log("info","Clientes guardados correctamente")
 
 def crearCotizacion():
     # cada registro del precio debe tener en cuenta el precio del registro anterior
@@ -55,9 +58,15 @@ def crearCotizacion():
 
     fechaInicio = date(2025,1,1)
     fechaFin = date.today()
-    fechaActual = fechaInicio
 
-    while fechaActual <= fechaFin:
+    comprobarRegistro = session.query(Cotizacion.fecha).order_by(Cotizacion.fecha.desc()).first()
+
+    if not comprobarRegistro:
+        fecha = fechaInicio
+    else:
+        fecha = comprobarRegistro[0] + timedelta(days=1)
+
+    while fecha <= fechaFin:
         bajadaOro = precioOro - (random.randint(1, 3) * precioOro / 100)
         subidaOro = precioOro + (random.randint(1, 3) * precioOro / 100)
         # Creo una lista para poder utilizar random.choice y elegir una de las dos opciones
@@ -65,19 +74,25 @@ def crearCotizacion():
         valorOroActual = random.choice(fluctuacion)
 
         nuevaCoti = Cotizacion(
-            fecha = fechaActual,
+            fecha = fecha,
             precio = valorOroActual
         )
 
         session.add(nuevaCoti)
         precioOro = valorOroActual
-        fechaActual += timedelta(days=1)
+        fecha += timedelta(days=1)
 
     session.commit()
-    print("Los registros de cotizacion han sido creados correctamente")
+    logger.log("info","Los registros de cotizacion han sido creados correctamente")
 
 
 def crearVentas():
+    # Comprobar si ya existen datos
+    countVentas = session.query(Venta).count()
+    if countVentas > 0:
+        logger.log("info", "Las ventas ya existen en la base de datos. Omitiendo creación.")
+        return
+
     estadoAceptada = session.query(Estado).filter(Estado.nombre == "ACEPTADA").first()
     estadoRechazada = session.query(Estado).filter(Estado.nombre == "RECHAZADA").first()
     estadoTasacion = session.query(Estado).filter(Estado.nombre == "TASACIÓN").first()
@@ -122,6 +137,11 @@ def crearVentas():
         session.add(nuevaVenta)
 
     session.commit()
+
+
+
+
+
 
 
 

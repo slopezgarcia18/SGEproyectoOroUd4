@@ -1,9 +1,11 @@
 # MAPEAR BD
 
-from sqlalchemy import BigInteger, Column, String, Date, ForeignKey
+from sqlalchemy import BigInteger, Column, String, Date, ForeignKey, Boolean
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
+
+# Clases para definir/mapear la BD
 
 class Cliente(Base):
     __tablename__ =  "cliente"
@@ -18,6 +20,7 @@ class Cliente(Base):
     nacionalidad = Column(String(50), nullable=False)
     telefono = Column(BigInteger, nullable=False)
     direccion = Column(String(50), nullable=False)
+    activo = Column(Boolean, default=True, nullable=False)
 
     def __repr__(self):
         return (f"Id: {self.id}, Nombre: {self.nombre}, apellidos: {self.apellidos}, fecha nacimiento: {self.fecha_nacim} "
